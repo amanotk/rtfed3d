@@ -104,21 +104,21 @@ if(BUILD_TESTING)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/examples
   )
 
-  add_test(NAME riemann1d_small_regression
+  add_test(NAME diffusion_small_regression
     COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
-      --executable $<TARGET_FILE:riemann1d>
-      --config ${CMAKE_SOURCE_DIR}/examples/riemann1d_small.cfg
-      --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_reference.h5
-      --output-name riemann1d_small.h5
+      --executable $<TARGET_FILE:diffusion>
+      --config ${CMAKE_SOURCE_DIR}/examples/diffusion_small.cfg
+      --reference ${CMAKE_SOURCE_DIR}/tests/data/diffusion_small_reference.h5
+      --output-name diffusion_small.h5
   )
 
   if(MPIEXEC_EXECUTABLE)
-    add_test(NAME riemann1d_small_mpi4_regression
+    add_test(NAME diffusion_small_mpi4_regression
       COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
-        --executable $<TARGET_FILE:riemann1d>
-        --config ${CMAKE_SOURCE_DIR}/examples/riemann1d_small.cfg
-        --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_mpi4_reference.h5
-        --output-name riemann1d_small.h5
+        --executable $<TARGET_FILE:diffusion>
+        --config ${CMAKE_SOURCE_DIR}/examples/diffusion_small.cfg
+        --reference ${CMAKE_SOURCE_DIR}/tests/data/diffusion_small_reference.h5
+        --output-name diffusion_small.h5
         --mpiexec ${MPIEXEC_EXECUTABLE}
         --mpi-numproc-flag=${RTFED3D_MPIEXEC_NUMPROC_FLAG}
         --mpi-nproc 4

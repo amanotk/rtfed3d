@@ -4,6 +4,8 @@ syntax:glob
 *.pyc
 tmp/*
 build/
+build-*/
 cmake-build-*/
 CMakeUserPresets.json
 compile_commands.json
+out/

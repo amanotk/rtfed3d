@@ -46,6 +46,9 @@ Example executables are written to `build/examples/`.
 $ ctest --test-dir build --output-on-failure
 ```
 
+The regression suite currently uses a small `diffusion` example for both
+single-process and 4-process MPI snapshot checks.
+
 ### Run
 Each example expects its `.cfg` file in the current working directory. The build
 copies matching config files next to each executable, so the simplest workflow is:
