@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 
 project(rtfed3d LANGUAGES C CXX)
 
+include(CTest)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -93,4 +95,23 @@ if(RTFED3D_BUILD_EXAMPLES)
       VERBATIM
     )
   endforeach()
+endif()
+
+if(BUILD_TESTING)
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+  add_test(NAME riemann1d_help
+    COMMAND $<TARGET_FILE:riemann1d> --help
+  )
+  set_tests_properties(riemann1d_help PROPERTIES
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/examples
+  )
+
+  add_test(NAME riemann1d_small_regression
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
+      --executable $<TARGET_FILE:riemann1d>
+      --config ${CMAKE_SOURCE_DIR}/examples/riemann1d_small.cfg
+      --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_reference.h5
+      --output-name riemann1d_small.h5
+  )
 endif()

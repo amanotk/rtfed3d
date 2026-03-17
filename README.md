@@ -28,24 +28,32 @@ If Blitz++ or HDF5 live in non-standard locations, pass `-DBLITZ_INCLUDE_DIR=...
 `-DBLITZ_LIBRARY=...`, and the usual CMake hints for MPI/HDF5 during configure.
 
 ```bash
-$ cmake --preset release
+$ cmake -S . -B build
 ```
 
 ### Compile
 ```bash
-$ cmake --build --preset release
+$ cmake --build build
 ```
 
-Example executables are written to `build/release/examples/`.
+Example executables are written to `build/examples/`.
+
+### Test
+```bash
+$ ctest --test-dir build --output-on-failure
+```
 
 ### Run
 Each example expects its `.cfg` file in the current working directory. The build
 copies matching config files next to each executable, so the simplest workflow is:
 
 ```bash
-$ cd build/release/examples
+$ cd build/examples
 $ ./riemann1d
 ```
+
+If you want an optimized build, you can add `-DCMAKE_BUILD_TYPE=Release` during
+configure, but it is optional.
 
 You can also override the config file explicitly:
 
