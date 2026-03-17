@@ -15,6 +15,9 @@
 - `base/`: vendored support headers used by the solver and examples
 - `external/mdspan/`: vendored upstream `kokkos/mdspan` headers
 
+The vendored `mdspan` source tree records its upstream revision in
+`external/mdspan/VENDORED.md`.
+
 ## Build
 
 ### Clone
