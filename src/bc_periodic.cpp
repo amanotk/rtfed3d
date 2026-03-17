@@ -53,8 +53,8 @@ PeriodicBoundary::PeriodicBoundary(const int Nz, const int Ny, const int Nx,
   calc_grid_bounds(Nx, Nb, Mx, Lbx, Ubx);
   Mm = limiter::max(Mz*My, Mz*Mx, My*Mx);
 
-  m_lb = Lbz, Lby, Lbx;
-  m_ub = Ubz, Uby, Ubx;
+  m_lb = {Lbz, Lby, Lbx};
+  m_ub = {Ubz, Uby, Ubx};
 
   // allocate buffer
   m_bufnum = Mm * 16*Nb;
@@ -93,8 +93,8 @@ void PeriodicBoundary::set_field(Global &g, T_vector &eb, int nb)
     int pos;
     float64 *buf;
 
-    blitz::TinyVector<int,4> eb_lb = eb.lbound();
-    blitz::TinyVector<int,4> eb_ub = eb.ubound();
+    std::array<int,4> eb_lb = eb.lbound();
+    std::array<int,4> eb_ub = eb.ubound();
 
     //
     // to lower
@@ -171,10 +171,10 @@ void PeriodicBoundary::set_fluid(Global &g, T_vector &uf, T_vector &eb,
     int pos;
     float64 *buf;
 
-    blitz::TinyVector<int,4> uf_lb = uf.lbound();
-    blitz::TinyVector<int,4> uf_ub = uf.ubound();
-    blitz::TinyVector<int,4> eb_lb = eb.lbound();
-    blitz::TinyVector<int,4> eb_ub = eb.ubound();
+    std::array<int,4> uf_lb = uf.lbound();
+    std::array<int,4> uf_ub = uf.ubound();
+    std::array<int,4> eb_lb = eb.lbound();
+    std::array<int,4> eb_ub = eb.ubound();
 
     //
     // to lower

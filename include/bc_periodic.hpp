@@ -17,8 +17,8 @@
 class PeriodicBoundary : public BaseBoundary
 {
 protected:
-  blitz::TinyVector<int,3> m_lb;
-  blitz::TinyVector<int,3> m_ub;
+  std::array<int,3> m_lb;
+  std::array<int,3> m_ub;
   int      m_bufnum;
   float64 *m_bufsnd[3][2];
   float64 *m_bufrcv[3][2];

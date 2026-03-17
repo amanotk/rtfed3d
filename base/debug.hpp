@@ -8,10 +8,13 @@
 ///
 /// $Id$
 ///
-#include <blitz/array.h>
+#include <cstdio>
+#include <fstream>
+
+#include "common.hpp"
 
 ///
-/// write blitz++ array
+/// write array
 ///
 template <class T_array>
 void debug_write(const char* filename, T_array &array, bool append=true)

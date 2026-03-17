@@ -95,7 +95,7 @@ public:
     int dir   = config.getAs<int>("dir");
     int Ng    = config.getAs<int>("Ng");
     float64 L = config.getAs<float64>("L");
-    blitz::TinyVector<float64,3> kx, ky, kz;
+    std::array<float64,3> kx, ky, kz;
 
     mpiutil::getGlobalOffset(global_offset);
 
@@ -111,9 +111,9 @@ public:
 
       switch(dir) {
       case 0: // x-y plane
-        kx = 1.0, 0.0, 0.0;
-        ky = 0.0, 1.0, 0.0;
-        kz = 0.0, 0.0, 1.0;
+        kx = {1.0, 0.0, 0.0};
+        ky = {0.0, 1.0, 0.0};
+        kz = {0.0, 0.0, 1.0};
         xrange[0] = delx * global_offset[2] - L;
         xrange[1] = xrange[0] + Nx * delx;
         xrange[2] = xrange[1] - xrange[0];
@@ -125,9 +125,9 @@ public:
         zrange[2] = zrange[1] - zrange[0];
         break;
       case 1: // z-x plane
-        ky = 1.0, 0.0, 0.0;
-        kz = 0.0, 1.0, 0.0;
-        kx = 0.0, 0.0, 1.0;
+        ky = {1.0, 0.0, 0.0};
+        kz = {0.0, 1.0, 0.0};
+        kx = {0.0, 0.0, 1.0};
         zrange[0] = delz * global_offset[0] - L;
         zrange[1] = zrange[0] + Nz * delz;
         zrange[2] = zrange[1] - zrange[0];
@@ -139,9 +139,9 @@ public:
         yrange[2] = yrange[1] - yrange[0];
         break;
       case 2: // y-z plane
-        kz = 1.0, 0.0, 0.0;
-        kx = 0.0, 1.0, 0.0;
-        ky = 0.0, 0.0, 1.0;
+        kz = {1.0, 0.0, 0.0};
+        kx = {0.0, 1.0, 0.0};
+        ky = {0.0, 0.0, 1.0};
         yrange[0] = dely * global_offset[1] - L;
         yrange[1] = yrange[0] + Ny * dely;
         yrange[2] = yrange[1] - yrange[0];

@@ -8,7 +8,6 @@
 ///
 /// $Id: global.hpp,v 641a96a86755 2015/09/14 19:35:09 amano $
 ///
-#include <blitz/array.h>
 #include "common.hpp"
 #include "limiter.hpp"
 #include "mpiutil.hpp"

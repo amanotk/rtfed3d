@@ -3,10 +3,9 @@
 ## Requirements
 
 - Parallel HDF5 (compiled with `--enable-parallel`)
-- Blitz++
-  - https://github.com/blitzpp/blitz/releases
 - MPI C++ compiler wrapper
 - CMake 3.20 or newer
+- C++17 compiler
 
 ## Repository Layout
 
@@ -14,6 +13,7 @@
 - `src/`: shared solver implementation
 - `examples/`: runnable problem drivers and example configuration files
 - `base/`: vendored support headers used by the solver and examples
+- `external/mdspan/`: vendored upstream `kokkos/mdspan` headers
 
 ## Build
 
@@ -24,8 +24,8 @@ $ cd rtfed3d
 ```
 
 ### Configure
-If Blitz++ or HDF5 live in non-standard locations, pass `-DBLITZ_INCLUDE_DIR=...`,
-`-DBLITZ_LIBRARY=...`, and the usual CMake hints for MPI/HDF5 during configure.
+If HDF5 lives in a non-standard location, pass the usual CMake hints for
+MPI/HDF5 during configure.
 
 ```bash
 $ cmake -S . -B build

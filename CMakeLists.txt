@@ -4,7 +4,7 @@ project(rtfed3d LANGUAGES C CXX)
 
 include(CTest)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -29,22 +29,13 @@ else()
   set(RTFED3D_HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS})
 endif()
 
-find_path(BLITZ_INCLUDE_DIR NAMES blitz/array.h)
-find_library(BLITZ_LIBRARY NAMES blitz)
-
-if(NOT BLITZ_INCLUDE_DIR OR NOT BLITZ_LIBRARY)
-  message(FATAL_ERROR "Blitz++ was not found. Set BLITZ_INCLUDE_DIR and BLITZ_LIBRARY, or install Blitz++ in a standard location.")
-endif()
-
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/base/common.hpp")
   message(FATAL_ERROR "Vendored support code is missing from base/. Ensure the repository contains the base/ directory.")
 endif()
 
-add_library(blitz::blitz UNKNOWN IMPORTED)
-set_target_properties(blitz::blitz PROPERTIES
-  IMPORTED_LOCATION "${BLITZ_LIBRARY}"
-  INTERFACE_INCLUDE_DIRECTORIES "${BLITZ_INCLUDE_DIR}"
-)
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/external/mdspan/include/experimental/mdspan")
+  message(FATAL_ERROR "Vendored mdspan headers are missing from external/mdspan/.")
+endif()
 
 set(RTFED3D_CORE_SOURCES
   src/bc_periodic.cpp
@@ -61,12 +52,12 @@ target_include_directories(rtfed3d_core
   PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/base
+    ${CMAKE_SOURCE_DIR}/external/mdspan/include
     ${RTFED3D_HDF5_INCLUDE_DIRS}
 )
 target_link_libraries(rtfed3d_core
   PUBLIC
     MPI::MPI_CXX
-    blitz::blitz
     ${RTFED3D_HDF5_LIBRARIES}
 )
 
@@ -126,7 +117,7 @@ if(BUILD_TESTING)
       COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
         --executable $<TARGET_FILE:riemann1d>
         --config ${CMAKE_SOURCE_DIR}/examples/riemann1d_small.cfg
-        --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_reference.h5
+        --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_mpi4_reference.h5
         --output-name riemann1d_small.h5
         --mpiexec ${MPIEXEC_EXECUTABLE}
         --mpi-numproc-flag=${RTFED3D_MPIEXEC_NUMPROC_FLAG}

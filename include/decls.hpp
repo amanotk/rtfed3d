@@ -7,10 +7,14 @@
 ///
 /// $Id: decls.hpp,v 8d17220e7571 2015/09/02 13:32:37 amano $
 ///
-typedef blitz::Array<float64,1> T_coord;
-typedef blitz::Array<float64,3> T_scalar;
-typedef blitz::Array<float64,4> T_vector;
-typedef blitz::Array<float64,5> T_tensor;
+#include "common.hpp"
+
+#include "array_types.hpp"
+
+typedef Array<float64,1> T_coord;
+typedef Array<float64,3> T_scalar;
+typedef Array<float64,4> T_vector;
+typedef Array<float64,5> T_tensor;
 
 // forward declaration
 class Global;
