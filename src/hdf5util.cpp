@@ -60,7 +60,7 @@ void put_attribute_type(hid_t dest, const char *name, hid_t type, void *data)
 void put_attribute_type(hid_t dest, const char *name, hid_t type,
                         const int n, void *data)
 {
-  hsize_t dims[1] = {n};
+  hsize_t dims[1] = {static_cast<hsize_t>(n)};
   hid_t array = H5Screate_simple(1, dims, NULL);
   hid_t attr  = H5Acreate(dest, name, type, array, H5P_DEFAULT, H5P_DEFAULT);
 

@@ -1,17 +1,9 @@
 syntax:glob
 
 *.dat
-*.o
-*.a
-*.d
 *.pyc
-Makefile.inc
-riemann1d
-circular
-vortex
-blastwave
-reconnection
-sheets
-tearing
-diffusion
 tmp/*
+build/
+cmake-build-*/
+CMakeUserPresets.json
+compile_commands.json
