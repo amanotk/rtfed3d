@@ -92,6 +92,12 @@ def main():
     parser.add_argument("--config", required=True)
     parser.add_argument("--reference", required=True)
     parser.add_argument("--output-name", required=True)
+    parser.add_argument("--mpiexec")
+    parser.add_argument("--mpi-numproc-flag", default="-n")
+    parser.add_argument("--mpi-nproc", type=int, default=1)
+    parser.add_argument("--xdomain", type=int, default=0)
+    parser.add_argument("--ydomain", type=int, default=0)
+    parser.add_argument("--zdomain", type=int, default=0)
     parser.add_argument("--rtol", type=float, default=1.0e-12)
     parser.add_argument("--atol", type=float, default=1.0e-12)
     args = parser.parse_args()
@@ -102,8 +108,24 @@ def main():
 
     with tempfile.TemporaryDirectory(prefix="rtfed3d-regression-") as tmpdir:
         tmpdir_path = pathlib.Path(tmpdir)
+        command = [str(executable), "-c", str(config)]
+
+        if args.xdomain:
+            command.extend(["-x", str(args.xdomain)])
+        if args.ydomain:
+            command.extend(["-y", str(args.ydomain)])
+        if args.zdomain:
+            command.extend(["-z", str(args.zdomain)])
+
+        if args.mpiexec and args.mpi_nproc > 1:
+            command = [
+                args.mpiexec,
+                args.mpi_numproc_flag,
+                str(args.mpi_nproc),
+            ] + command
+
         subprocess.run(
-            [str(executable), "-c", str(config)],
+            command,
             cwd=tmpdir,
             check=True,
         )

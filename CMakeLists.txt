@@ -100,6 +100,12 @@ endif()
 if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
+  if(MPIEXEC_NUMPROC_FLAG)
+    set(RTFED3D_MPIEXEC_NUMPROC_FLAG ${MPIEXEC_NUMPROC_FLAG})
+  else()
+    set(RTFED3D_MPIEXEC_NUMPROC_FLAG -n)
+  endif()
+
   add_test(NAME riemann1d_help
     COMMAND $<TARGET_FILE:riemann1d> --help
   )
@@ -114,4 +120,18 @@ if(BUILD_TESTING)
       --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_reference.h5
       --output-name riemann1d_small.h5
   )
+
+  if(MPIEXEC_EXECUTABLE)
+    add_test(NAME riemann1d_small_mpi4_regression
+      COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
+        --executable $<TARGET_FILE:riemann1d>
+        --config ${CMAKE_SOURCE_DIR}/examples/riemann1d_small.cfg
+        --reference ${CMAKE_SOURCE_DIR}/tests/data/riemann1d_small_reference.h5
+        --output-name riemann1d_small.h5
+        --mpiexec ${MPIEXEC_EXECUTABLE}
+        --mpi-numproc-flag=${RTFED3D_MPIEXEC_NUMPROC_FLAG}
+        --mpi-nproc 4
+        --xdomain 4
+    )
+  endif()
 endif()
