@@ -17,7 +17,10 @@ set(RTFED3D_HDF5_LIBRARIES)
 set(RTFED3D_HDF5_INCLUDE_DIRS)
 
 if(PkgConfig_FOUND)
-  pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5-openmpi hdf5-mpi)
+  pkg_search_module(HDF5 QUIET IMPORTED_TARGET hdf5-openmpi hdf5-mpi)
+endif()
+
+if(HDF5_FOUND)
   set(RTFED3D_HDF5_LIBRARIES PkgConfig::HDF5)
   set(RTFED3D_HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS})
 else()
@@ -88,7 +91,7 @@ if(RTFED3D_BUILD_EXAMPLES)
   endforeach()
 endif()
 
-if(BUILD_TESTING)
+if(BUILD_TESTING AND RTFED3D_BUILD_EXAMPLES)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
   if(MPIEXEC_NUMPROC_FLAG)
