@@ -1,9 +1,0 @@
-syntax:glob
-
-*.dat
-*.o
-*.pyc
-TestSArray
-TestConfig
-TestMersenneTwister
-TestNArray

@@ -29,8 +29,8 @@ else()
   set(RTFED3D_HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS})
 endif()
 
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/base/common.hpp")
-  message(FATAL_ERROR "Vendored support code is missing from base/. Ensure the repository contains the base/ directory.")
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/include/common.hpp")
+  message(FATAL_ERROR "Support headers are missing from include/.")
 endif()
 
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/external/mdspan/include/experimental/mdspan")
@@ -51,7 +51,6 @@ add_library(rtfed3d_core STATIC ${RTFED3D_CORE_SOURCES})
 target_include_directories(rtfed3d_core
   PUBLIC
     ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/base
     ${CMAKE_SOURCE_DIR}/external/mdspan/include
     ${RTFED3D_HDF5_INCLUDE_DIRS}
 )

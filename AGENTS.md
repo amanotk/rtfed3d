@@ -8,7 +8,6 @@ This file is for coding agents working in `/home/amano/rtfed3d`.
 - The build system is CMake.
 - MPI and parallel HDF5 are required.
 - `external/mdspan/` contains a vendored upstream `kokkos/mdspan` tree.
-- `base/` contains vendored support code used by the solver.
 - `examples/` contains runnable problem setups, not unit tests.
 - `tests/` contains regression infrastructure and golden HDF5 snapshots.
 
@@ -26,7 +25,6 @@ This file is for coding agents working in `/home/amano/rtfed3d`.
 - `src/`: shared solver implementation
 - `examples/`: simulation drivers and `.cfg` inputs
 - `tests/`: regression helpers and reference HDF5 outputs
-- `base/`: vendored internal support headers/utilities
 - `external/mdspan/`: vendored upstream mdspan headers and metadata
 - `out/`: generated outputs; ignored by git
 - `build/`, `build-*`: generated build trees; ignored by git
@@ -141,7 +139,7 @@ Follow the style already present in the codebase.
 ### Headers and includes
 
 - Use quoted includes for project headers, e.g. `#include "global.hpp"`.
-- Keep vendored support headers in use through the configured include paths rather than relative paths.
+- Keep project support headers in use through the configured include paths rather than relative paths.
 - Do not add unnecessary includes.
 - Prefer keeping include order stable with nearby files rather than applying an external convention.
 

@@ -12,7 +12,6 @@
 - `include/`: project headers
 - `src/`: shared solver implementation
 - `examples/`: runnable problem drivers and example configuration files
-- `base/`: vendored support headers used by the solver and examples
 - `external/mdspan/`: vendored upstream `kokkos/mdspan` headers
 
 The vendored `mdspan` source tree records its upstream revision in
