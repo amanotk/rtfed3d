@@ -12,7 +12,7 @@ namespace hdf5util
 
 const int MAXDIMS = 32;
 
-void create_file(const char *filename)
+void create_file(const char* filename)
 {
   hid_t file, prop;
 
@@ -27,7 +27,7 @@ void create_file(const char *filename)
   H5Fclose(file);
 }
 
-hid_t open_file(const char *filename)
+hid_t open_file(const char* filename)
 {
   hid_t file, prop;
 
@@ -46,7 +46,7 @@ void close_file(hid_t file)
   H5Fclose(file);
 }
 
-void put_attribute_type(hid_t dest, const char *name, hid_t type, void *data)
+void put_attribute_type(hid_t dest, const char* name, hid_t type, void* data)
 {
   hid_t scalar = H5Screate(H5S_SCALAR);
   hid_t attr   = H5Acreate(dest, name, type, scalar, H5P_DEFAULT, H5P_DEFAULT);
@@ -57,12 +57,11 @@ void put_attribute_type(hid_t dest, const char *name, hid_t type, void *data)
   H5Aclose(attr);
 }
 
-void put_attribute_type(hid_t dest, const char *name, hid_t type,
-                        const int n, void *data)
+void put_attribute_type(hid_t dest, const char* name, hid_t type, const int n, void* data)
 {
   hsize_t dims[1] = {static_cast<hsize_t>(n)};
-  hid_t array = H5Screate_simple(1, dims, NULL);
-  hid_t attr  = H5Acreate(dest, name, type, array, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t   array   = H5Screate_simple(1, dims, NULL);
+  hid_t   attr    = H5Acreate(dest, name, type, array, H5P_DEFAULT, H5P_DEFAULT);
 
   H5Awrite(attr, type, data);
 
@@ -71,42 +70,42 @@ void put_attribute_type(hid_t dest, const char *name, hid_t type,
 }
 
 template <>
-void put_attribute(hid_t dest, const char *name, int *data)
+void put_attribute(hid_t dest, const char* name, int* data)
 {
   put_attribute_type(dest, name, H5T_NATIVE_INT, data);
 }
 
 template <>
-void put_attribute(hid_t dest, const char *name, float *data)
+void put_attribute(hid_t dest, const char* name, float* data)
 {
   put_attribute_type(dest, name, H5T_NATIVE_FLOAT, data);
 }
 
 template <>
-void put_attribute(hid_t dest, const char *name, double *data)
+void put_attribute(hid_t dest, const char* name, double* data)
 {
   put_attribute_type(dest, name, H5T_NATIVE_DOUBLE, data);
 }
 
 template <>
-void put_attribute(hid_t dest, const char *name, const int n, int *data)
+void put_attribute(hid_t dest, const char* name, const int n, int* data)
 {
   put_attribute_type(dest, name, H5T_NATIVE_INT, n, data);
 }
 
 template <>
-void put_attribute(hid_t dest, const char *name, const int n, float *data)
+void put_attribute(hid_t dest, const char* name, const int n, float* data)
 {
   put_attribute_type(dest, name, H5T_NATIVE_FLOAT, n, data);
 }
 
 template <>
-void put_attribute(hid_t dest, const char *name, const int n, double *data)
+void put_attribute(hid_t dest, const char* name, const int n, double* data)
 {
   put_attribute_type(dest, name, H5T_NATIVE_DOUBLE, n, data);
 }
 
-void extend_dimension(hid_t dest, const char *name)
+void extend_dimension(hid_t dest, const char* name)
 {
   hsize_t dims[MAXDIMS], mdim[MAXDIMS];
 
@@ -121,26 +120,24 @@ void extend_dimension(hid_t dest, const char *name)
   H5Dclose(dataset);
 }
 
-void create_dataset(hid_t dest, const char *name, hid_t type,
-                    const int rank, hsize_t dims[], hsize_t mdim[])
+void create_dataset(hid_t dest, const char* name, hid_t type, const int rank, hsize_t dims[],
+                    hsize_t mdim[])
 {
   // chunk size == dims
   create_dataset(dest, name, type, rank, dims, mdim, dims);
 }
 
-void create_dataset(hid_t dest, const char *name, hid_t type,
-                    const int rank, hsize_t dims[], hsize_t mdim[],
-                    hsize_t chunk[])
+void create_dataset(hid_t dest, const char* name, hid_t type, const int rank, hsize_t dims[],
+                    hsize_t mdim[], hsize_t chunk[])
 {
-  hid_t space   = H5Screate_simple(rank, dims, mdim);
-  hid_t plist   = H5Pcreate(H5P_DATASET_CREATE);
-  hid_t dtype   = H5Tcopy(type);
+  hid_t space = H5Screate_simple(rank, dims, mdim);
+  hid_t plist = H5Pcreate(H5P_DATASET_CREATE);
+  hid_t dtype = H5Tcopy(type);
 
   H5Pset_chunk(plist, rank, chunk);
   H5Tset_order(dtype, H5T_ORDER_LE);
 
-  hid_t dataset = H5Dcreate(dest, name, dtype, space,
-                            H5P_DEFAULT, plist, H5P_DEFAULT);
+  hid_t dataset = H5Dcreate(dest, name, dtype, space, H5P_DEFAULT, plist, H5P_DEFAULT);
 
   H5Sclose(space);
   H5Pclose(plist);
@@ -148,10 +145,8 @@ void create_dataset(hid_t dest, const char *name, hid_t type,
   H5Dclose(dataset);
 }
 
-void write_dataset(hid_t dest, const char *name,
-                   const int rank, hsize_t dims[], hsize_t count[],
-                   hsize_t loffset[], hsize_t goffset[],
-                   void *data)
+void write_dataset(hid_t dest, const char* name, const int rank, hsize_t dims[], hsize_t count[],
+                   hsize_t loffset[], hsize_t goffset[], void* data)
 {
   hid_t dataset = H5Dopen(dest, name, H5P_DEFAULT);
   hid_t dspace  = H5Dget_space(dataset);
@@ -175,9 +170,4 @@ void write_dataset(hid_t dest, const char *name,
   H5Dclose(dataset);
 }
 
-}
-
-// Local Variables:
-// c-file-style   : "gnu"
-// c-file-offsets : ((innamespace . 0) (inline-open . 0))
-// End:
+} // namespace hdf5util

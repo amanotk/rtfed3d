@@ -15,14 +15,24 @@
 class BaseBoundary
 {
 protected:
-  BaseBoundary() {};
-  virtual ~BaseBoundary() {}
+  BaseBoundary(){};
+  virtual ~BaseBoundary()
+  {
+  }
 
 public:
-  virtual void set_field(Global &g, T_vector &eb, int nb=-1) {}
-  virtual void set_fluid(Global &g, T_vector &uf, T_vector &eb, int nb=-1) {}
-  virtual void set_field_flux(Global &g, T_vector &flux, int nb=-1) {}
-  virtual void set_fluid_flux(Global &g, T_tensor &flux, int nb=-1) {}
+  virtual void set_field(Global& g, T_vector& eb, int nb = -1)
+  {
+  }
+  virtual void set_fluid(Global& g, T_vector& uf, T_vector& eb, int nb = -1)
+  {
+  }
+  virtual void set_field_flux(Global& g, T_vector& flux, int nb = -1)
+  {
+  }
+  virtual void set_fluid_flux(Global& g, T_tensor& flux, int nb = -1)
+  {
+  }
 };
 
 // Local Variables:

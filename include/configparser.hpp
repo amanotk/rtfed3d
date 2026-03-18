@@ -7,13 +7,13 @@
 ///
 /// $Id$
 ///
-#include <iostream>
-#include <iomanip>
 #include <fstream>
-#include <sstream>
-#include <string>
+#include <iomanip>
+#include <iostream>
 #include <map>
 #include <regex.h>
+#include <sstream>
+#include <string>
 
 //
 // Simple Configuration File Parser
@@ -21,39 +21,38 @@
 class ConfigParser
 {
 private:
-  std::string m_filename;
+  std::string                        m_filename;
   std::map<std::string, std::string> m_pair;
 
   // read config file and store (key, val) to pair to m_pair
   void read_file(const char* filename)
   {
-    static const int max_num_match = 5;
-    static const char pattern[] =
-      "[[:space:]]*([A-Za-z0-9_/\\.\\+\\-]+)[[:space:]]*="
-      "[[:space:]]*([A-Za-z0-9_/\\.\\+\\-]+)[[:space:]]*";
+    static const int  max_num_match = 5;
+    static const char pattern[]     = "[[:space:]]*([A-Za-z0-9_/\\.\\+\\-]+)[[:space:]]*="
+                                      "[[:space:]]*([A-Za-z0-9_/\\.\\+\\-]+)[[:space:]]*";
 
-    int status;
+    int         status;
     std::string line;
 
     // open file
     std::ifstream ifs(filename);
 
-    if( !ifs ) {
+    if (!ifs) {
       std::cerr << "Error: Could not open file : " << filename << std::endl;
     }
 
     // prepare for regex match
-    regex_t buf;
+    regex_t    buf;
     regmatch_t match[max_num_match];
 
     status = regcomp(&buf, pattern, REG_EXTENDED);
-    if(status != 0) {
+    if (status != 0) {
       std::cerr << "Error: regcomp failed" << std::endl;
       exit(-1);
     }
 
     // parse for each line
-    while( std::getline(ifs, line) ) {
+    while (std::getline(ifs, line)) {
       line = discard_comment(line);
       parse_line(line, &buf, match, max_num_match);
     }
@@ -63,19 +62,19 @@ private:
   }
 
   // discard comment (after "#" for each line)
-  std::string discard_comment(std::string &str)
+  std::string discard_comment(std::string& str)
   {
     std::string::size_type last = str.find_first_of("#");
     return str.substr(0, last);
   }
 
   // perform regex match and store (key, val) pair
-  void parse_line(std::string &str, regex_t *buf, regmatch_t *match, size_t n)
+  void parse_line(std::string& str, regex_t* buf, regmatch_t* match, size_t n)
   {
     int status = regexec(buf, str.c_str(), n, match, 0);
 
     // ignore unrecognized line
-    if(status != 0 || n < 3) {
+    if (status != 0 || n < 3) {
       return;
     }
 
@@ -89,13 +88,14 @@ private:
   std::string trim(std::string str)
   {
     std::string::size_type first = str.find_first_not_of(" ");
-    std::string::size_type last  = str.find_last_not_of (" ");
+    std::string::size_type last  = str.find_last_not_of(" ");
 
-    return str.substr(first, last+1);
+    return str.substr(first, last + 1);
   }
 
   // template declaration
-  template <class T> T type_cast(std::string &str);
+  template <class T>
+  T type_cast(std::string& str);
 
 public:
   // constructor: read given file
@@ -109,7 +109,7 @@ public:
   template <class T>
   T getAs(const char* key)
   {
-    if( m_pair.find(std::string(key)) == m_pair.end() ) {
+    if (m_pair.find(std::string(key)) == m_pair.end()) {
       std::cerr << "Error: cannot find key : " << key << std::endl;
       exit(-1);
     }
@@ -120,7 +120,7 @@ public:
   // return if given key is available
   bool has_key(const char* key)
   {
-    if( m_pair.find(std::string(key)) == m_pair.end() )
+    if (m_pair.find(std::string(key)) == m_pair.end())
       return false;
 
     return true;
@@ -131,15 +131,13 @@ public:
   {
     std::map<std::string, std::string>::iterator it = m_pair.begin();
 
-    std::cout << std::setw(20) << std::left << "key"
-              << std::setw( 2) << ":"
-              << std::setw(20) << std::left << "val" << std::endl;
+    std::cout << std::setw(20) << std::left << "key" << std::setw(2) << ":" << std::setw(20)
+              << std::left << "val" << std::endl;
     std::cout << std::setw(42) << std::setfill('-') << "" << std::endl;
     std::cout << std::setfill(' ');
-    while( it != m_pair.end() ) {
-      std::cout << std::setw(20) << std::left << (*it).first
-                << std::setw( 2) << ":"
-                << std::setw(20) << std::left << (*it).second << std::endl;
+    while (it != m_pair.end()) {
+      std::cout << std::setw(20) << std::left << (*it).first << std::setw(2) << ":" << std::setw(20)
+                << std::left << (*it).second << std::endl;
       ++it;
     }
   }
@@ -150,7 +148,7 @@ public:
     std::ifstream     ifs(m_filename.c_str());
     std::stringstream ss;
 
-    if( !ifs ) {
+    if (!ifs) {
       std::cerr << "Error: Could not open file : " << m_filename << std::endl;
     }
 
@@ -166,28 +164,28 @@ public:
 
 // for string
 template <>
-std::string ConfigParser::type_cast<std::string>(std::string &str)
+std::string ConfigParser::type_cast<std::string>(std::string& str)
 {
   return str;
 }
 
 // for int
 template <>
-int ConfigParser::type_cast<int>(std::string &str)
+int ConfigParser::type_cast<int>(std::string& str)
 {
   return std::atoi(str.c_str());
 }
 
 // for float
 template <>
-float ConfigParser::type_cast<float>(std::string &str)
+float ConfigParser::type_cast<float>(std::string& str)
 {
   return std::atof(str.c_str());
 }
 
 // for double
 template <>
-double ConfigParser::type_cast<double>(std::string &str)
+double ConfigParser::type_cast<double>(std::string& str)
 {
   return std::atof(str.c_str());
 }

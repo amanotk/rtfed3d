@@ -7,8 +7,8 @@
 ///
 #include "mc2.hpp"
 
-void MC2::flux_fluid(float64 dt, Global &g,
-                     T_vector &uf, T_vector &ebc, T_vector &ueb, T_tensor &ff)
+void MC2::flux_fluid(float64 dt, Global& g, T_vector& uf, T_vector& ebc, T_vector& ueb,
+                     T_tensor& ff)
 {
   xint_c2f(g, uf, ebc, ueb);
   xflux_fluid_hll(dt, g, ff, ebx, Nb);
@@ -22,7 +22,7 @@ void MC2::flux_fluid(float64 dt, Global &g,
   g.boundary->set_fluid_flux(g, ff);
 }
 
-void MC2::flux_field(float64 dt, Global &g, T_vector &ueb, T_vector &feb)
+void MC2::flux_field(float64 dt, Global& g, T_vector& ueb, T_vector& feb)
 {
   // clear flux
   feb = 0.0;
@@ -39,24 +39,24 @@ void MC2::flux_field(float64 dt, Global &g, T_vector &ueb, T_vector &feb)
   g.boundary->set_field_flux(g, ueb);
 }
 
-void MC2::xint_c2f(Global &g, T_vector &uf, T_vector &ebc, T_vector &ueb)
+void MC2::xint_c2f(Global& g, T_vector& uf, T_vector& ebc, T_vector& ueb)
 {
-  for(int iz=g.Lbz-Nb; iz <= g.Ubz+Nb ;iz++) {
-    for(int iy=g.Lby-Nb; iy <= g.Uby+Nb ;iy++) {
-      for(int ix=g.Lbx-1; ix <= g.Ubx+1 ;ix++) {
-        float64 *um = &uf(iz,iy,ix-1,0);
-        float64 *uc = &uf(iz,iy,ix  ,0);
-        float64 *up = &uf(iz,iy,ix+1,0);
-        float64 *vm = &ebc(iz,iy,ix-1,0);
-        float64 *vc = &ebc(iz,iy,ix  ,0);
-        float64 *vp = &ebc(iz,iy,ix+1,0);
-        float64 *wr = &ueb(iz,iy,ix-1,0);
-        float64 *wl = &ueb(iz,iy,ix  ,0);
-        float64 *fr = &ur(iz,iy,ix-1,0);
-        float64 *fl = &ul(iz,iy,ix  ,0);
+  for (int iz = g.Lbz - Nb; iz <= g.Ubz + Nb; iz++) {
+    for (int iy = g.Lby - Nb; iy <= g.Uby + Nb; iy++) {
+      for (int ix = g.Lbx - 1; ix <= g.Ubx + 1; ix++) {
+        float64* um = &uf(iz, iy, ix - 1, 0);
+        float64* uc = &uf(iz, iy, ix, 0);
+        float64* up = &uf(iz, iy, ix + 1, 0);
+        float64* vm = &ebc(iz, iy, ix - 1, 0);
+        float64* vc = &ebc(iz, iy, ix, 0);
+        float64* vp = &ebc(iz, iy, ix + 1, 0);
+        float64* wr = &ueb(iz, iy, ix - 1, 0);
+        float64* wl = &ueb(iz, iy, ix, 0);
+        float64* fr = &ur(iz, iy, ix - 1, 0);
+        float64* fl = &ul(iz, iy, ix, 0);
 
         // fluid
-        for(int k=0; k < 10 ;k++) {
+        for (int k = 0; k < 10; k++) {
           mc2int(um[k], uc[k], up[k], fl[k], fr[k]);
         }
 
@@ -87,24 +87,24 @@ void MC2::xint_c2f(Global &g, T_vector &uf, T_vector &ebc, T_vector &ueb)
   }
 }
 
-void MC2::yint_c2f(Global &g, T_vector &uf, T_vector &ebc, T_vector &ueb)
+void MC2::yint_c2f(Global& g, T_vector& uf, T_vector& ebc, T_vector& ueb)
 {
-  for(int iz=g.Lbz-Nb; iz <= g.Ubz+Nb ;iz++) {
-    for(int iy=g.Lby-1; iy <= g.Uby+1 ;iy++) {
-      for(int ix=g.Lbx-Nb; ix <= g.Ubx+Nb ;ix++) {
-        float64 *um = &uf(iz,iy-1,ix,0);
-        float64 *uc = &uf(iz,iy  ,ix,0);
-        float64 *up = &uf(iz,iy+1,ix,0);
-        float64 *vm = &ebc(iz,iy-1,ix,0);
-        float64 *vc = &ebc(iz,iy  ,ix,0);
-        float64 *vp = &ebc(iz,iy+1,ix,0);
-        float64 *wr = &ueb(iz,iy-1,ix,0);
-        float64 *wl = &ueb(iz,iy  ,ix,0);
-        float64 *fr = &ur(iz,iy-1,ix,0);
-        float64 *fl = &ul(iz,iy  ,ix,0);
+  for (int iz = g.Lbz - Nb; iz <= g.Ubz + Nb; iz++) {
+    for (int iy = g.Lby - 1; iy <= g.Uby + 1; iy++) {
+      for (int ix = g.Lbx - Nb; ix <= g.Ubx + Nb; ix++) {
+        float64* um = &uf(iz, iy - 1, ix, 0);
+        float64* uc = &uf(iz, iy, ix, 0);
+        float64* up = &uf(iz, iy + 1, ix, 0);
+        float64* vm = &ebc(iz, iy - 1, ix, 0);
+        float64* vc = &ebc(iz, iy, ix, 0);
+        float64* vp = &ebc(iz, iy + 1, ix, 0);
+        float64* wr = &ueb(iz, iy - 1, ix, 0);
+        float64* wl = &ueb(iz, iy, ix, 0);
+        float64* fr = &ur(iz, iy - 1, ix, 0);
+        float64* fl = &ul(iz, iy, ix, 0);
 
         // fluid
-        for(int k=0; k < 10 ;k++) {
+        for (int k = 0; k < 10; k++) {
           mc2int(um[k], uc[k], up[k], fl[k], fr[k]);
         }
 
@@ -135,24 +135,24 @@ void MC2::yint_c2f(Global &g, T_vector &uf, T_vector &ebc, T_vector &ueb)
   }
 }
 
-void MC2::zint_c2f(Global &g, T_vector &uf, T_vector &ebc, T_vector &ueb)
+void MC2::zint_c2f(Global& g, T_vector& uf, T_vector& ebc, T_vector& ueb)
 {
-  for(int iz=g.Lbz-1; iz <= g.Ubz+1 ;iz++) {
-    for(int iy=g.Lby-Nb; iy <= g.Uby+Nb ;iy++) {
-      for(int ix=g.Lbx-Nb; ix <= g.Ubx+Nb ;ix++) {
-        float64 *um = &uf(iz-1,iy,ix,0);
-        float64 *uc = &uf(iz  ,iy,ix,0);
-        float64 *up = &uf(iz+1,iy,ix,0);
-        float64 *vm = &ebc(iz-1,iy,ix,0);
-        float64 *vc = &ebc(iz  ,iy,ix,0);
-        float64 *vp = &ebc(iz+1,iy,ix,0);
-        float64 *wr = &ueb(iz-1,iy,ix,0);
-        float64 *wl = &ueb(iz  ,iy,ix,0);
-        float64 *fr = &ur(iz-1,iy,ix,0);
-        float64 *fl = &ul(iz  ,iy,ix,0);
+  for (int iz = g.Lbz - 1; iz <= g.Ubz + 1; iz++) {
+    for (int iy = g.Lby - Nb; iy <= g.Uby + Nb; iy++) {
+      for (int ix = g.Lbx - Nb; ix <= g.Ubx + Nb; ix++) {
+        float64* um = &uf(iz - 1, iy, ix, 0);
+        float64* uc = &uf(iz, iy, ix, 0);
+        float64* up = &uf(iz + 1, iy, ix, 0);
+        float64* vm = &ebc(iz - 1, iy, ix, 0);
+        float64* vc = &ebc(iz, iy, ix, 0);
+        float64* vp = &ebc(iz + 1, iy, ix, 0);
+        float64* wr = &ueb(iz - 1, iy, ix, 0);
+        float64* wl = &ueb(iz, iy, ix, 0);
+        float64* fr = &ur(iz - 1, iy, ix, 0);
+        float64* fl = &ul(iz, iy, ix, 0);
 
         // fluid
-        for(int k=0; k < 10 ;k++) {
+        for (int k = 0; k < 10; k++) {
           mc2int(um[k], uc[k], up[k], fl[k], fr[k]);
         }
 
@@ -183,19 +183,19 @@ void MC2::zint_c2f(Global &g, T_vector &uf, T_vector &ebc, T_vector &ueb)
   }
 }
 
-void MC2::xint_f2e(Global &g, T_vector &eby, T_vector &ebz)
+void MC2::xint_f2e(Global& g, T_vector& eby, T_vector& ebz)
 {
-  for(int iz=g.Lbz-1; iz <= g.Ubz+1 ;iz++) {
-    for(int iy=g.Lby-1; iy <= g.Uby+1 ;iy++) {
-      for(int ix=g.Lbx-1; ix <= g.Ubx+1 ;ix++) {
-        float64 *fr = &ur(iz,iy,ix-1,0);
-        float64 *fl = &ul(iz,iy,ix  ,0);
+  for (int iz = g.Lbz - 1; iz <= g.Ubz + 1; iz++) {
+    for (int iy = g.Lby - 1; iy <= g.Uby + 1; iy++) {
+      for (int ix = g.Lbx - 1; ix <= g.Ubx + 1; ix++) {
+        float64* fr = &ur(iz, iy, ix - 1, 0);
+        float64* fl = &ul(iz, iy, ix, 0);
 
         // y-face
         {
-          float64 *vm = &eby(iz,iy,ix-1,0);
-          float64 *vc = &eby(iz,iy,ix  ,0);
-          float64 *vp = &eby(iz,iy,ix+1,0);
+          float64* vm = &eby(iz, iy, ix - 1, 0);
+          float64* vc = &eby(iz, iy, ix, 0);
+          float64* vp = &eby(iz, iy, ix + 1, 0);
 
           // Ey
           mc2int(vm[1], vc[1], vp[1], fl[0], fr[0]);
@@ -212,9 +212,9 @@ void MC2::xint_f2e(Global &g, T_vector &eby, T_vector &ebz)
 
         // z-face
         {
-          float64 *vm = &ebz(iz,iy,ix-1,0);
-          float64 *vc = &ebz(iz,iy,ix  ,0);
-          float64 *vp = &ebz(iz,iy,ix+1,0);
+          float64* vm = &ebz(iz, iy, ix - 1, 0);
+          float64* vc = &ebz(iz, iy, ix, 0);
+          float64* vp = &ebz(iz, iy, ix + 1, 0);
 
           // Ey
           mc2int(vm[1], vc[1], vp[1], fl[4], fr[4]);
@@ -233,19 +233,19 @@ void MC2::xint_f2e(Global &g, T_vector &eby, T_vector &ebz)
   }
 }
 
-void MC2::yint_f2e(Global &g, T_vector &ebz, T_vector &ebx)
+void MC2::yint_f2e(Global& g, T_vector& ebz, T_vector& ebx)
 {
-  for(int iz=g.Lbz-1; iz <= g.Ubz+1 ;iz++) {
-    for(int iy=g.Lby-1; iy <= g.Uby+1 ;iy++) {
-      for(int ix=g.Lbx-1; ix <= g.Ubx+1 ;ix++) {
-        float64 *fr = &ur(iz,iy-1,ix,0);
-        float64 *fl = &ul(iz,iy  ,ix,0);
+  for (int iz = g.Lbz - 1; iz <= g.Ubz + 1; iz++) {
+    for (int iy = g.Lby - 1; iy <= g.Uby + 1; iy++) {
+      for (int ix = g.Lbx - 1; ix <= g.Ubx + 1; ix++) {
+        float64* fr = &ur(iz, iy - 1, ix, 0);
+        float64* fl = &ul(iz, iy, ix, 0);
 
         // z-face
         {
-          float64 *vm = &ebz(iz,iy-1,ix,0);
-          float64 *vc = &ebz(iz,iy  ,ix,0);
-          float64 *vp = &ebz(iz,iy+1,ix,0);
+          float64* vm = &ebz(iz, iy - 1, ix, 0);
+          float64* vc = &ebz(iz, iy, ix, 0);
+          float64* vp = &ebz(iz, iy + 1, ix, 0);
 
           // Ex
           mc2int(vm[0], vc[0], vp[0], fl[0], fr[0]);
@@ -262,9 +262,9 @@ void MC2::yint_f2e(Global &g, T_vector &ebz, T_vector &ebx)
 
         // x-face
         {
-          float64 *vm = &ebx(iz,iy-1,ix,0);
-          float64 *vc = &ebx(iz,iy  ,ix,0);
-          float64 *vp = &ebx(iz,iy+1,ix,0);
+          float64* vm = &ebx(iz, iy - 1, ix, 0);
+          float64* vc = &ebx(iz, iy, ix, 0);
+          float64* vp = &ebx(iz, iy + 1, ix, 0);
 
           // Ex
           mc2int(vm[0], vc[0], vp[0], fl[4], fr[4]);
@@ -283,19 +283,19 @@ void MC2::yint_f2e(Global &g, T_vector &ebz, T_vector &ebx)
   }
 }
 
-void MC2::zint_f2e(Global &g, T_vector &ebx, T_vector &eby)
+void MC2::zint_f2e(Global& g, T_vector& ebx, T_vector& eby)
 {
-  for(int iz=g.Lbz-1; iz <= g.Ubz+1 ;iz++) {
-    for(int iy=g.Lby-1; iy <= g.Uby+1 ;iy++) {
-      for(int ix=g.Lbx-1; ix <= g.Ubx+1 ;ix++) {
-        float64 *fr = &ur(iz-1,iy,ix,0);
-        float64 *fl = &ul(iz  ,iy,ix,0);
+  for (int iz = g.Lbz - 1; iz <= g.Ubz + 1; iz++) {
+    for (int iy = g.Lby - 1; iy <= g.Uby + 1; iy++) {
+      for (int ix = g.Lbx - 1; ix <= g.Ubx + 1; ix++) {
+        float64* fr = &ur(iz - 1, iy, ix, 0);
+        float64* fl = &ul(iz, iy, ix, 0);
 
         // x-face
         {
-          float64 *vm = &ebx(iz-1,iy,ix,0);
-          float64 *vc = &ebx(iz  ,iy,ix,0);
-          float64 *vp = &ebx(iz+1,iy,ix,0);
+          float64* vm = &ebx(iz - 1, iy, ix, 0);
+          float64* vc = &ebx(iz, iy, ix, 0);
+          float64* vp = &ebx(iz + 1, iy, ix, 0);
 
           // Ex
           mc2int(vm[0], vc[0], vp[0], fl[0], fr[0]);
@@ -312,9 +312,9 @@ void MC2::zint_f2e(Global &g, T_vector &ebx, T_vector &eby)
 
         // y-face
         {
-          float64 *vm = &eby(iz-1,iy,ix,0);
-          float64 *vc = &eby(iz  ,iy,ix,0);
-          float64 *vp = &eby(iz+1,iy,ix,0);
+          float64* vm = &eby(iz - 1, iy, ix, 0);
+          float64* vc = &eby(iz, iy, ix, 0);
+          float64* vp = &eby(iz + 1, iy, ix, 0);
 
           // Ex
           mc2int(vm[0], vc[0], vp[0], fl[4], fr[4]);
@@ -332,8 +332,3 @@ void MC2::zint_f2e(Global &g, T_vector &ebx, T_vector &eby)
     }
   }
 }
-
-// Local Variables:
-// c-file-style   : "gnu"
-// c-file-offsets : ((innamespace . 0) (inline-open . 0))
-// End:

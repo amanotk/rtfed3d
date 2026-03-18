@@ -5,18 +5,18 @@
 ///
 /// $Id: sheets.cpp,v f3d1b0f8cdaa 2015/09/07 13:33:49 amano $
 ///
-#include "global.hpp"
-#include "solver.hpp"
-#include "integrator.hpp"
-#include "io_hdf5.hpp"
 #include "bc_periodic.hpp"
 #include "cmdparser.hpp"
 #include "configparser.hpp"
+#include "global.hpp"
+#include "integrator.hpp"
+#include "io_hdf5.hpp"
+#include "solver.hpp"
 
 class Sheets;
 typedef Sheets T_global;
-typedef RK3 T_integrator;
-typedef MC2 T_solver;
+typedef RK3    T_integrator;
+typedef MC2    T_solver;
 
 ///
 /// @brief Current Sheets
@@ -25,33 +25,33 @@ class Sheets : public Global
 {
 public:
   /// constructor
-  Sheets(const int shape[3], const int nb, const float64 cc,
-         const float64 gamma, const float64 delh)
-    : Global(shape, nb, cc, gamma)
+  Sheets(const int shape[3], const int nb, const float64 cc, const float64 gamma,
+         const float64 delh)
+      : Global(shape, nb, cc, gamma)
   {
     physt = 0.0;
-    delx = delh;
-    dely = delh;
-    delz = delh;
+    delx  = delh;
+    dely  = delh;
+    delz  = delh;
     mpiutil::getLocalRange(0, delz, zrange);
     mpiutil::getLocalRange(1, dely, yrange);
     mpiutil::getLocalRange(2, delx, xrange);
 
-    for(int ix=Lbx-Nb; ix <= Ubx+Nb ;ix++) {
-      xig(ix) = xrange[0] + delx*(ix-Lbx+0.5);
+    for (int ix = Lbx - Nb; ix <= Ubx + Nb; ix++) {
+      xig(ix) = xrange[0] + delx * (ix - Lbx + 0.5);
     }
 
-    for(int iy=Lby-Nb; iy <= Uby+Nb ;iy++) {
-      yig(iy) = yrange[0] + dely*(iy-Lby+0.5);
+    for (int iy = Lby - Nb; iy <= Uby + Nb; iy++) {
+      yig(iy) = yrange[0] + dely * (iy - Lby + 0.5);
     }
 
-    for(int iz=Lbz-Nb; iz <= Ubz+Nb ;iz++) {
-      zig(iz) = zrange[0] + delz*(iz-Lbz+0.5);
+    for (int iz = Lbz - Nb; iz <= Ubz + Nb; iz++) {
+      zig(iz) = zrange[0] + delz * (iz - Lbz + 0.5);
     }
   }
 
   /// set up initial condition
-  void init(ConfigParser &config)
+  void init(ConfigParser& config)
   {
     boundary = new PeriodicBoundary(Nz, Ny, Nx, Nb);
 
@@ -62,49 +62,49 @@ public:
     float64 v0   = config.getAs<float64>("v0");
 
     // proton
-    qp  = c / (lp * sqrt(common::pi4*mpe));
+    qp  = c / (lp * sqrt(common::pi4 * mpe));
     mp  = 1.0;
-    qmp = qp/mp;
+    qmp = qp / mp;
 
     // electron
-    qe  =-qp;
+    qe  = -qp;
     me  = mp / mpe;
-    qme = qe/me;
+    qme = qe / me;
 
-    for(int iz=Lbz-1; iz <= Ubz+1 ;iz++) {
-      for(int iy=Lby-1; iy <= Uby+1 ;iy++) {
-        for(int ix=Lbx-1; ix <= Ubx+1 ;ix++) {
-          float64 b0    = sqrt(common::pi4);
-          float64 rho   = 1.0;
-          float64 vx    = v0 * cos(common::pi * yig(iy));
-          float64 vy    = 0.0;
-          float64 vz    = 0.0;
-          float64 rgm   = 1.0 / sqrt(1 - vx*vx - vy*vy - vz*vz);
-          float64 p     = 0.5 * beta;
-          float64 bx    = 0.0;
-          float64 by    = fabs(xig(ix) - 1.0) < 0.5 ? b0 : -b0;
-          float64 bz    = 0.0;
+    for (int iz = Lbz - 1; iz <= Ubz + 1; iz++) {
+      for (int iy = Lby - 1; iy <= Uby + 1; iy++) {
+        for (int ix = Lbx - 1; ix <= Ubx + 1; ix++) {
+          float64 b0  = sqrt(common::pi4);
+          float64 rho = 1.0;
+          float64 vx  = v0 * cos(common::pi * yig(iy));
+          float64 vy  = 0.0;
+          float64 vz  = 0.0;
+          float64 rgm = 1.0 / sqrt(1 - vx * vx - vy * vy - vz * vz);
+          float64 p   = 0.5 * beta;
+          float64 bx  = 0.0;
+          float64 by  = fabs(xig(ix) - 1.0) < 0.5 ? b0 : -b0;
+          float64 bz  = 0.0;
 
           // proton
-          uf(iz,iy,ix,0)  = rho / (mp + me);
-          uf(iz,iy,ix,1)  = vx * rgm;
-          uf(iz,iy,ix,2)  = vy * rgm;
-          uf(iz,iy,ix,3)  = vz * rgm;
-          uf(iz,iy,ix,4)  = p / 2;
+          uf(iz, iy, ix, 0) = rho / (mp + me);
+          uf(iz, iy, ix, 1) = vx * rgm;
+          uf(iz, iy, ix, 2) = vy * rgm;
+          uf(iz, iy, ix, 3) = vz * rgm;
+          uf(iz, iy, ix, 4) = p / 2;
           // electron
-          uf(iz,iy,ix,5)  = rho / (mp + me);
-          uf(iz,iy,ix,6)  = vx * rgm;
-          uf(iz,iy,ix,7)  = vy * rgm;
-          uf(iz,iy,ix,8)  = vz * rgm;
-          uf(iz,iy,ix,9)  = p / 2;
+          uf(iz, iy, ix, 5) = rho / (mp + me);
+          uf(iz, iy, ix, 6) = vx * rgm;
+          uf(iz, iy, ix, 7) = vy * rgm;
+          uf(iz, iy, ix, 8) = vz * rgm;
+          uf(iz, iy, ix, 9) = p / 2;
           // e-field
-          ebc(iz,iy,ix,0) =-(vy*bz - vz*by)*rc;
-          ebc(iz,iy,ix,1) =-(vz*bx - vx*bz)*rc;
-          ebc(iz,iy,ix,2) =-(vx*by - vy*bx)*rc;
+          ebc(iz, iy, ix, 0) = -(vy * bz - vz * by) * rc;
+          ebc(iz, iy, ix, 1) = -(vz * bx - vx * bz) * rc;
+          ebc(iz, iy, ix, 2) = -(vx * by - vy * bx) * rc;
           // b-field
-          ebc(iz,iy,ix,3) = bx;
-          ebc(iz,iy,ix,4) = by;
-          ebc(iz,iy,ix,5) = bz;
+          ebc(iz, iy, ix, 3) = bx;
+          ebc(iz, iy, ix, 4) = by;
+          ebc(iz, iy, ix, 5) = bz;
         }
       }
     }
@@ -136,9 +136,9 @@ int main(int argc, char** argv)
 {
   const int Nb = 2;
 
-  int shape[3], domain[3];
-  int nw, Ng, Nt, dir;
-  float64 cc, gamma, tmax, cfl, delh;
+  int         shape[3], domain[3];
+  int         nw, Ng, Nt, dir;
+  float64     cc, gamma, tmax, cfl, delh;
   std::string cfg, out;
 
   // parse command line
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
   cfl   = config.getAs<float64>("cfl");
   cc    = config.getAs<float64>("cc");
   gamma = config.getAs<float64>("gamma");
-  delh  = 2.0/static_cast<float64>(Ng);
+  delh  = 2.0 / static_cast<float64>(Ng);
 
   shape[0] = 1;
   shape[1] = Ng;
@@ -185,9 +185,9 @@ int main(int argc, char** argv)
   io.write_field(global, out, true);
 
   // main loop
-  nw = 1;
+  nw          = 1;
   global.delt = tmax / Nt;
-  while(global.physt < tmax) {
+  while (global.physt < tmax) {
     global.delt *= global.get_dt_factor(cfl);
 
     // push
@@ -195,12 +195,11 @@ int main(int argc, char** argv)
     global.physt += global.delt;
 
     // diagnostics
-    if( global.physt + 0.5*global.delt >= tmax*nw / Nt ) {
+    if (global.physt + 0.5 * global.delt >= tmax * nw / Nt) {
       float64 Ef, Ep;
 
       global.energy(Ef, Ep);
-      tfm::format(std::cout, "%15.8e %15.8e %15.8e %15.8e\n",
-                  global.physt, Ef, Ep, Ef+Ep);
+      tfm::format(std::cout, "%15.8e %15.8e %15.8e %15.8e\n", global.physt, Ef, Ep, Ef + Ep);
       io.write_field(global, out);
       nw = nw + 1;
     }
@@ -210,8 +209,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
-// Local Variables:
-// c-file-style   : "gnu"
-// c-file-offsets : ((innamespace . 0) (inline-open . 0))
-// End:

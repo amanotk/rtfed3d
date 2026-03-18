@@ -17,16 +17,16 @@
 /// Author: Takanobu AMANO <amano@eps.s.u-tokyo.ac.jp>
 /// $Id$
 ///
+#include <cmath>
+#include <cstdarg>
+#include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <string>
-#include <cmath>
-#include <fstream>
 #include <vector>
-#include <cstddef>
-#include <cstdarg>
 
 //----------------------------------------------------------
-#if   defined (_SX)
+#if defined(_SX)
 //
 // NEC SX Series : assume long as 64bit integer
 //
@@ -34,12 +34,12 @@ typedef int           int32_t;
 typedef long          int64_t;
 typedef unsigned int  uint32_t;
 typedef unsigned long uint64_t;
-#define PRId8         "d"
-#define PRId16        "d"
-#define PRId32        "d"
-#define PRId64        "ld"
+#define PRId8 "d"
+#define PRId16 "d"
+#define PRId32 "d"
+#define PRId64 "ld"
 
-#define INLINE   inline
+#define INLINE inline
 #define RESTRICT restrict
 
 #elif defined(__FCC_VERSION) && defined(__sparcv9)
@@ -48,12 +48,12 @@ typedef unsigned long uint64_t;
 //
 // intXX_t seems to be already defined.
 //
-#define PRId8         "d"
-#define PRId16        "d"
-#define PRId32        "d"
-#define PRId64        "ld"
+#define PRId8 "d"
+#define PRId16 "d"
+#define PRId32 "d"
+#define PRId64 "ld"
 
-#define INLINE   inline
+#define INLINE inline
 #define RESTRICT
 
 //
@@ -68,47 +68,47 @@ typedef unsigned long uint64_t;
 //
 #define INTEGER4 INT
 #define INTEGER8 LONG
-#define REAL4    FLOAT
-#define REAL8    DOUBLE
+#define REAL4 FLOAT
+#define REAL8 DOUBLE
 
 #elif defined(__xlC__) && defined(_POWER)
 //
 // IBM XL C/C++ Compiler on Power Processor
 //
-#if   defined(__64BIT__)
+#if defined(__64BIT__)
 typedef int           int32_t;
 typedef long          int64_t;
 typedef unsigned int  uint32_t;
 typedef unsigned long uint64_t;
-#define PRId8         "d"
-#define PRId16        "d"
-#define PRId32        "d"
-#define PRId64        "ld"
+#define PRId8 "d"
+#define PRId16 "d"
+#define PRId32 "d"
+#define PRId64 "ld"
 #else // 32bit
 typedef int                int32_t;
 typedef long long          int64_t;
 typedef unsigned int       uint32_t;
 typedef unsigned long long uint64_t;
-#define PRId8         "d"
-#define PRId16        "d"
-#define PRId32        "d"
-#define PRId64        "lld"
+#define PRId8 "d"
+#define PRId16 "d"
+#define PRId32 "d"
+#define PRId64 "lld"
 #endif
 
-#define INLINE   inline
+#define INLINE inline
 #define RESTRICT __restrict__
 
-#elif defined (__GNUC__)
+#elif defined(__GNUC__)
 //
 // GNU Compiler and Comparitble
 //
 #ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS
 #endif
-#include <stdint.h>
 #include <inttypes.h>
+#include <stdint.h>
 
-#define INLINE   inline
+#define INLINE inline
 #define RESTRICT __restrict__
 
 #else
@@ -119,16 +119,16 @@ typedef unsigned long long uint64_t;
 //----------------------------------------------------------
 
 // integer type definition : require stdint.h
-typedef int32_t        int32;
-typedef int64_t        int64;
-typedef uint32_t       uint32;
-typedef uint64_t       uint64;
+typedef int32_t  int32;
+typedef int64_t  int64;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
 // real type definition
-typedef float          float32;
-typedef double         float64;
+typedef float  float32;
+typedef double float64;
 
 // definition of default floating point numbers
-typedef float64        real;
+typedef float64 real;
 
 // Local Variables:
 // c-file-style   : "gnu"

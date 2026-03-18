@@ -5,18 +5,18 @@
 ///
 /// $Id$
 ///
-#include "global.hpp"
-#include "solver.hpp"
-#include "integrator.hpp"
-#include "io_hdf5.hpp"
 #include "bc_periodic.hpp"
 #include "cmdparser.hpp"
 #include "configparser.hpp"
+#include "global.hpp"
+#include "integrator.hpp"
+#include "io_hdf5.hpp"
+#include "solver.hpp"
 
 class Blastwave;
 typedef Blastwave T_global;
-typedef RK3 T_integrator;
-typedef MC2 T_solver;
+typedef RK3       T_integrator;
+typedef MC2       T_solver;
 
 ///
 /// @brief Blast Wave Problem
@@ -25,12 +25,11 @@ class Blastwave : public Global
 {
 public:
   /// constructor
-  Blastwave(const int shape[3], const int nb,
-            const float64 cc, const float64 gamma)
-    : Global(shape, nb, cc, gamma)
+  Blastwave(const int shape[3], const int nb, const float64 cc, const float64 gamma)
+      : Global(shape, nb, cc, gamma)
   {
     const float64 L = 12.0;
-    int global_shape[3], global_offset[3];
+    int           global_shape[3], global_offset[3];
 
     mpiutil::getGlobalShape(global_shape);
     mpiutil::getGlobalOffset(global_offset);
@@ -40,31 +39,31 @@ public:
     dely  = L / static_cast<float64>(global_shape[1]);
     delx  = L / static_cast<float64>(global_shape[2]);
 
-    zrange[0] = delz*global_offset[0] - 0.5*L;
-    zrange[1] = delz*Nz + zrange[0];
+    zrange[0] = delz * global_offset[0] - 0.5 * L;
+    zrange[1] = delz * Nz + zrange[0];
     zrange[2] = zrange[1] - zrange[0];
-    yrange[0] = dely*global_offset[1] - 0.5*L;
-    yrange[1] = dely*Ny + yrange[0];
+    yrange[0] = dely * global_offset[1] - 0.5 * L;
+    yrange[1] = dely * Ny + yrange[0];
     yrange[2] = yrange[1] - yrange[0];
-    xrange[0] = delx*global_offset[2] - 0.5*L;
-    xrange[1] = delx*Nx + xrange[0];
+    xrange[0] = delx * global_offset[2] - 0.5 * L;
+    xrange[1] = delx * Nx + xrange[0];
     xrange[2] = xrange[1] - xrange[0];
 
-    for(int ix=Lbx-Nb; ix <= Ubx+Nb ;ix++) {
-      xig(ix) = xrange[0] + delx*(ix-Lbx+0.5);
+    for (int ix = Lbx - Nb; ix <= Ubx + Nb; ix++) {
+      xig(ix) = xrange[0] + delx * (ix - Lbx + 0.5);
     }
 
-    for(int iy=Lby-Nb; iy <= Uby+Nb ;iy++) {
-      yig(iy) = yrange[0] + dely*(iy-Lby+0.5);
+    for (int iy = Lby - Nb; iy <= Uby + Nb; iy++) {
+      yig(iy) = yrange[0] + dely * (iy - Lby + 0.5);
     }
 
-    for(int iz=Lbz-Nb; iz <= Ubz+Nb ;iz++) {
-      zig(iz) = zrange[0] + delz*(iz-Lbz+0.5);
+    for (int iz = Lbz - Nb; iz <= Ubz + Nb; iz++) {
+      zig(iz) = zrange[0] + delz * (iz - Lbz + 0.5);
     }
   }
 
   /// set up initial condition
-  void init(ConfigParser &config)
+  void init(ConfigParser& config)
   {
     float64 R  = 0.8;
     float64 dR = 1.0 - R;
@@ -83,46 +82,46 @@ public:
     float64 bz  = config.getAs<float64>("bz");
 
     // proton
-    qp  = c / (lp * sqrt(common::pi4*mpe));
+    qp  = c / (lp * sqrt(common::pi4 * mpe));
     mp  = 1.0;
-    qmp = qp/mp;
+    qmp = qp / mp;
 
     // electron
-    qe  =-qp;
+    qe  = -qp;
     me  = mp / mpe;
-    qme = qe/me;
+    qme = qe / me;
 
-    for(int iz=Lbz-1; iz <= Ubz+1 ;iz++) {
-      for(int iy=Lby-1; iy <= Uby+1 ;iy++) {
-        for(int ix=Lbx-1; ix <= Ubx+1 ;ix++) {
-          float64 r = sqrt(xig(ix)*xig(ix) + yig(iy)*yig(iy) + zig(iz)*zig(iz));
+    for (int iz = Lbz - 1; iz <= Ubz + 1; iz++) {
+      for (int iy = Lby - 1; iy <= Uby + 1; iy++) {
+        for (int ix = Lbx - 1; ix <= Ubx + 1; ix++) {
+          float64 r = sqrt(xig(ix) * xig(ix) + yig(iy) * yig(iy) + zig(iz) * zig(iz));
 
           // density and pressure
-          float64 rho = (ro - ri)*(r - R)/dR + ri;
-          float64 p   = (po - pi)*(r - R)/dR + pi;
-          rho = limiter::min(ri, limiter::max(ro, rho));
-          p   = limiter::min(pi, limiter::max(po, p));
+          float64 rho = (ro - ri) * (r - R) / dR + ri;
+          float64 p   = (po - pi) * (r - R) / dR + pi;
+          rho         = limiter::min(ri, limiter::max(ro, rho));
+          p           = limiter::min(pi, limiter::max(po, p));
 
           // proton
-          uf(iz,iy,ix,0)  = rho / (mp + me);
-          uf(iz,iy,ix,1)  = 0.0;
-          uf(iz,iy,ix,2)  = 0.0;
-          uf(iz,iy,ix,3)  = 0.0;
-          uf(iz,iy,ix,4)  = p / 2;
+          uf(iz, iy, ix, 0) = rho / (mp + me);
+          uf(iz, iy, ix, 1) = 0.0;
+          uf(iz, iy, ix, 2) = 0.0;
+          uf(iz, iy, ix, 3) = 0.0;
+          uf(iz, iy, ix, 4) = p / 2;
           // electron
-          uf(iz,iy,ix,5)  = rho / (mp + me);
-          uf(iz,iy,ix,6)  = 0.0;
-          uf(iz,iy,ix,7)  = 0.0;
-          uf(iz,iy,ix,8)  = 0.0;
-          uf(iz,iy,ix,9)  = p / 2;
+          uf(iz, iy, ix, 5) = rho / (mp + me);
+          uf(iz, iy, ix, 6) = 0.0;
+          uf(iz, iy, ix, 7) = 0.0;
+          uf(iz, iy, ix, 8) = 0.0;
+          uf(iz, iy, ix, 9) = p / 2;
           // e-field
-          ebc(iz,iy,ix,0) = 0.0;
-          ebc(iz,iy,ix,1) = 0.0;
-          ebc(iz,iy,ix,2) = 0.0;
+          ebc(iz, iy, ix, 0) = 0.0;
+          ebc(iz, iy, ix, 1) = 0.0;
+          ebc(iz, iy, ix, 2) = 0.0;
           // b-field
-          ebc(iz,iy,ix,3) = bx;
-          ebc(iz,iy,ix,4) = by;
-          ebc(iz,iy,ix,5) = bz;
+          ebc(iz, iy, ix, 3) = bx;
+          ebc(iz, iy, ix, 4) = by;
+          ebc(iz, iy, ix, 5) = bz;
         }
       }
     }
@@ -148,9 +147,9 @@ public:
     msg += tfm::format("%-20s = %20.12e\n", "pressure inside", pi);
     msg += tfm::format("%-20s = %20.12e\n", "density outside", ro);
     msg += tfm::format("%-20s = %20.12e\n", "pressure outside", po);
-    msg += tfm::format("%-20s = %20.12e\n", "Bx" , bx);
-    msg += tfm::format("%-20s = %20.12e\n", "By" , by);
-    msg += tfm::format("%-20s = %20.12e\n", "Bz" , bz);
+    msg += tfm::format("%-20s = %20.12e\n", "Bx", bx);
+    msg += tfm::format("%-20s = %20.12e\n", "By", by);
+    msg += tfm::format("%-20s = %20.12e\n", "Bz", bz);
   }
 };
 
@@ -161,9 +160,9 @@ int main(int argc, char** argv)
 {
   const int Nb = 2;
 
-  int shape[3], domain[3];
-  int nw, Nx, Ny, Nz, Nt;
-  float64 cc, gamma, tmax, cfl;
+  int         shape[3], domain[3];
+  int         nw, Nx, Ny, Nz, Nt;
+  float64     cc, gamma, tmax, cfl;
   std::string cfg, out;
 
   // parse command line
@@ -211,9 +210,9 @@ int main(int argc, char** argv)
   io.write_field(global, out, true);
 
   // main loop
-  nw = 1;
+  nw          = 1;
   global.delt = tmax / Nt;
-  while(global.physt < tmax) {
+  while (global.physt < tmax) {
     global.delt *= global.get_dt_factor(cfl);
 
     // push
@@ -221,12 +220,11 @@ int main(int argc, char** argv)
     global.physt += global.delt;
 
     // diagnostics
-    if( global.physt + 0.5*global.delt >= tmax*nw / Nt ) {
+    if (global.physt + 0.5 * global.delt >= tmax * nw / Nt) {
       float64 Ef, Ep;
 
       global.energy(Ef, Ep);
-      tfm::format(std::cout, "%15.8e %15.8e %15.8e %15.8e\n",
-                  global.physt, Ef, Ep, Ef+Ep);
+      tfm::format(std::cout, "%15.8e %15.8e %15.8e %15.8e\n", global.physt, Ef, Ep, Ef + Ep);
       io.write_field(global, out);
       nw = nw + 1;
     }
@@ -236,8 +234,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
-// Local Variables:
-// c-file-style   : "gnu"
-// c-file-offsets : ((innamespace . 0) (inline-open . 0))
-// End:

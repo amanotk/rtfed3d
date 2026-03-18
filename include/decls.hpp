@@ -11,34 +11,35 @@
 
 #include "array_types.hpp"
 
-typedef Array<float64,1> T_coord;
-typedef Array<float64,3> T_scalar;
-typedef Array<float64,4> T_vector;
-typedef Array<float64,5> T_tensor;
+typedef Array<float64, 1> T_coord;
+typedef Array<float64, 3> T_scalar;
+typedef Array<float64, 4> T_vector;
+typedef Array<float64, 5> T_tensor;
 
 // forward declaration
 class Global;
 class BaseBoundary;
 
-namespace {
+namespace
+{
 
 // constant
-const float64 rpi4 = 1/common::pi4;
+const float64 rpi4 = 1 / common::pi4;
 
 /// Calculate Lorentz factor
 float64 lorentz(float64 ux, float64 uy, float64 uz)
 {
-  return sqrt(1 + ux*ux + uy*uy + uz*uz);
+  return sqrt(1 + ux * ux + uy * uy + uz * uz);
 }
 
-void calc_grid_bounds(int N, int Nb, int &M, int &Lb, int &Ub)
+void calc_grid_bounds(int N, int Nb, int& M, int& Lb, int& Ub)
 {
-  M  = N + 2*Nb;
+  M  = N + 2 * Nb;
   Lb = Nb;
   Ub = N + Nb - 1;
 }
 
-}
+} // namespace
 
 // Local Variables:
 // c-file-style   : "gnu"

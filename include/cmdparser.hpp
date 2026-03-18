@@ -15,15 +15,14 @@
 class CmdParser : public cmdline::parser
 {
 public:
-  CmdParser(std::string config="")
+  CmdParser(std::string config = "")
   {
     add_default(config);
   }
 
   void add_default(std::string config)
   {
-    this->add<std::string>("config", 'c', "configuration file",
-                            false, config);
+    this->add<std::string>("config", 'c', "configuration file", false, config);
     this->add<int>("xdomain", 'x', "#PE in x direction", false, 0);
     this->add<int>("ydomain", 'y', "#PE in y direction", false, 0);
     this->add<int>("zdomain", 'z', "#PE in z direction", false, 0);

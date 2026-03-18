@@ -15,11 +15,14 @@
 class BaseIO
 {
 public:
-  BaseIO() {}
-  virtual ~BaseIO() {}
+  BaseIO()
+  {
+  }
+  virtual ~BaseIO()
+  {
+  }
 
-  virtual void write_field(Global &g, std::string filename,
-                           bool init=false) = 0;
+  virtual void write_field(Global& g, std::string filename, bool init = false) = 0;
 };
 
 // Local Variables:

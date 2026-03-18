@@ -7,9 +7,9 @@
 ///
 /// $Id: io_hdf5.hpp,v 8d17220e7571 2015/09/02 13:32:37 amano $
 ///
-#include "io.hpp"
 #include "hdf5.h"
 #include "hdf5util.hpp"
+#include "io.hpp"
 
 ///
 /// HDF5 I/O
@@ -18,12 +18,15 @@ class HDF5IO : public BaseIO
 {
 
 public:
-  HDF5IO() {}
-  virtual ~HDF5IO() {}
+  HDF5IO()
+  {
+  }
+  virtual ~HDF5IO()
+  {
+  }
 
-  virtual void write_parameter(Global &g, std::string filename);
-  virtual void write_field(Global &g, std::string filename,
-                           bool init=false);
+  virtual void write_parameter(Global& g, std::string filename);
+  virtual void write_field(Global& g, std::string filename, bool init = false);
 };
 
 // Local Variables:

@@ -16,30 +16,28 @@ template <class T, std::size_t Rank>
 class Array
 {
 public:
-  using T_numtype = T;
+  using T_numtype    = T;
   using extents_type = std::dextents<int, Rank>;
-  using mdspan_type = std::mdspan<T, extents_type, std::layout_right>;
+  using mdspan_type  = std::mdspan<T, extents_type, std::layout_right>;
 
-  Array()
-    : extents_{}, view_()
+  Array() : extents_{}, view_()
   {
   }
 
-  Array(const Array &other)
-    : extents_(other.extents_), storage_(other.storage_), view_()
+  Array(const Array& other) : extents_(other.extents_), storage_(other.storage_), view_()
   {
     update_view(std::make_index_sequence<Rank>{});
   }
 
-  Array(Array &&other) noexcept
-    : extents_(other.extents_), storage_(std::move(other.storage_)), view_()
+  Array(Array&& other) noexcept
+      : extents_(other.extents_), storage_(std::move(other.storage_)), view_()
   {
     update_view(std::make_index_sequence<Rank>{});
   }
 
-  Array& operator=(const Array &other)
+  Array& operator=(const Array& other)
   {
-    if(this != &other) {
+    if (this != &other) {
       extents_ = other.extents_;
       storage_ = other.storage_;
       update_view(std::make_index_sequence<Rank>{});
@@ -47,9 +45,9 @@ public:
     return *this;
   }
 
-  Array& operator=(Array &&other) noexcept
+  Array& operator=(Array&& other) noexcept
   {
-    if(this != &other) {
+    if (this != &other) {
       extents_ = other.extents_;
       storage_ = std::move(other.storage_);
       update_view(std::make_index_sequence<Rank>{});
@@ -57,14 +55,13 @@ public:
     return *this;
   }
 
-  template <class... Dims,
-            typename std::enable_if<sizeof...(Dims) == Rank, int>::type = 0>
+  template <class... Dims, typename std::enable_if<sizeof...(Dims) == Rank, int>::type = 0>
   void resize(Dims... dims)
   {
     extents_ = {static_cast<int>(dims)...};
 
     std::size_t count = 1;
-    for(std::size_t r=0; r < Rank ;r++) {
+    for (std::size_t r = 0; r < Rank; r++) {
       count *= static_cast<std::size_t>(extents_[r]);
     }
 
@@ -72,21 +69,19 @@ public:
     update_view(std::make_index_sequence<Rank>{});
   }
 
-  template <class... Indices,
-            typename std::enable_if<sizeof...(Indices) == Rank, int>::type = 0>
+  template <class... Indices, typename std::enable_if<sizeof...(Indices) == Rank, int>::type = 0>
   T& operator()(Indices... indices)
   {
     return view_(static_cast<int>(indices)...);
   }
 
-  template <class... Indices,
-            typename std::enable_if<sizeof...(Indices) == Rank, int>::type = 0>
+  template <class... Indices, typename std::enable_if<sizeof...(Indices) == Rank, int>::type = 0>
   const T& operator()(Indices... indices) const
   {
     return view_(static_cast<int>(indices)...);
   }
 
-  Array& operator=(const T &value)
+  Array& operator=(const T& value)
   {
     std::fill(storage_.begin(), storage_.end(), value);
     return *this;
@@ -127,7 +122,7 @@ public:
   {
     std::array<int, Rank> upper = {};
 
-    for(std::size_t r=0; r < Rank ;r++) {
+    for (std::size_t r = 0; r < Rank; r++) {
       upper[r] = extents_[r] - 1;
     }
 
@@ -142,8 +137,8 @@ private:
   }
 
   std::array<int, Rank> extents_;
-  std::vector<T> storage_;
-  mdspan_type view_;
+  std::vector<T>        storage_;
+  mdspan_type           view_;
 };
 
 #endif

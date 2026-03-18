@@ -12,6 +12,7 @@
 - `include/`: project headers
 - `src/`: shared solver implementation
 - `examples/`: runnable problem drivers and example configuration files
+- `external/`: vendored third-party headers, including `mdspan`, `tinyformat`, and `cmdline`
 - `external/mdspan/`: vendored upstream `kokkos/mdspan` headers
 
 The vendored `mdspan` source tree records its upstream revision in

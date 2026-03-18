@@ -51,6 +51,7 @@ add_library(rtfed3d_core STATIC ${RTFED3D_CORE_SOURCES})
 target_include_directories(rtfed3d_core
   PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/external
     ${CMAKE_SOURCE_DIR}/external/mdspan/include
     ${RTFED3D_HDF5_INCLUDE_DIRS}
 )

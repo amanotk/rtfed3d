@@ -8,6 +8,7 @@ This file is for coding agents working in `/home/amano/rtfed3d`.
 - The build system is CMake.
 - MPI and parallel HDF5 are required.
 - `external/mdspan/` contains a vendored upstream `kokkos/mdspan` tree.
+- `external/` also contains vendored single-header third-party dependencies.
 - `examples/` contains runnable problem setups, not unit tests.
 - `tests/` contains regression infrastructure and golden HDF5 snapshots.
 
@@ -25,6 +26,7 @@ This file is for coding agents working in `/home/amano/rtfed3d`.
 - `src/`: shared solver implementation
 - `examples/`: simulation drivers and `.cfg` inputs
 - `tests/`: regression helpers and reference HDF5 outputs
+- `external/`: vendored third-party headers
 - `external/mdspan/`: vendored upstream mdspan headers and metadata
 - `out/`: generated outputs; ignored by git
 - `build/`, `build-*`: generated build trees; ignored by git
@@ -190,7 +192,7 @@ Follow the style already present in the codebase.
 ## Git and Change Hygiene
 
 - Never commit generated `build/`, `build-*`, or `out/` artifacts.
-- Avoid editing vendored `external/mdspan/` files unless the task is specifically about updating the vendored dependency.
+- Avoid editing vendored code under `external/` unless the task is specifically about updating the vendored dependency.
 - If vendoring is updated, also update `external/mdspan/VENDORED.md`.
 - Keep commits scoped: build-system changes, regression updates, and solver changes should usually be separate commits.
 
