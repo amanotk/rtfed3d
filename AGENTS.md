@@ -94,7 +94,7 @@ ctest --test-dir build --rerun-failed --output-on-failure
 
 ## Regression Test Notes
 
-- The current golden regression uses `examples/diffusion_small.cfg`.
+- The current golden regression uses `tests/data/diffusion_small.cfg`.
 - The reference snapshot is `tests/data/diffusion_small_reference.h5`.
 - The same golden file is used for both the single-process and 4-rank MPI regression.
 - `riemann1d_help` is a smoke test only; it is not the current golden physics regression.
@@ -123,7 +123,7 @@ Override the config path explicitly when needed:
 For MPI runs, use the executable's domain flags:
 
 ```bash
-mpiexec -n 4 ./diffusion -c /absolute/path/to/examples/diffusion_small.cfg -x 4
+mpiexec -n 4 ./diffusion -c /absolute/path/to/tests/data/diffusion_small.cfg -x 4
 ```
 
 ## Lint / Formatting

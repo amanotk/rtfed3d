@@ -110,7 +110,7 @@ if(BUILD_TESTING AND RTFED3D_BUILD_EXAMPLES)
   add_test(NAME diffusion_small_regression
     COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
       --executable $<TARGET_FILE:diffusion>
-      --config ${CMAKE_SOURCE_DIR}/examples/diffusion_small.cfg
+      --config ${CMAKE_SOURCE_DIR}/tests/data/diffusion_small.cfg
       --reference ${CMAKE_SOURCE_DIR}/tests/data/diffusion_small_reference.h5
       --output-name diffusion_small.h5
   )
@@ -119,7 +119,7 @@ if(BUILD_TESTING AND RTFED3D_BUILD_EXAMPLES)
     add_test(NAME diffusion_small_mpi4_regression
       COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/run_and_compare_hdf5.py
         --executable $<TARGET_FILE:diffusion>
-        --config ${CMAKE_SOURCE_DIR}/examples/diffusion_small.cfg
+        --config ${CMAKE_SOURCE_DIR}/tests/data/diffusion_small.cfg
         --reference ${CMAKE_SOURCE_DIR}/tests/data/diffusion_small_reference.h5
         --output-name diffusion_small.h5
         --mpiexec ${MPIEXEC_EXECUTABLE}
