@@ -12,7 +12,6 @@
 #include "limiter.hpp"
 #include "mpiutil.hpp"
 #include "primitive.hpp"
-#include "MersenneTwister.hpp"
 #include "debug.hpp"
 
 #include "decls.hpp"
